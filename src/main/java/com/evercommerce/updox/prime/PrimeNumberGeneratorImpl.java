@@ -95,7 +95,7 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
             }
             divisor++;
         }
-        return value == 1 ? false : true;
+        return value <= 1 ? false : true;
     }
 
     @Override
