@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Evercommerce Updox Prime Number Coding Challenge</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    </head>
+
+    <body>
+        <section class="section">
+            <div class="container">
+                <h1 class="title">
+                    Prime Number Generator
+                </h1>
+                <p class="subtitle">
+                    Written by <strong>Charles Thomas</strong>
+                </p>
+
+                <form th:action="@{/generate}" method="post" class='box'>
+                    <label class='label'>Enter 2 numbers to find primes</label>
+                    <div class="columns">
+                        <div class='field column'>
+                            <label class='label'>Number 1</label>
+                            <input id="lower" name="lower" placeholder='1234' class='input' required />
+                        </div>
+                        <div class='field column'>
+                            <label class='label'>Number 2</label>
+                            <input id="upper" name="upper" placeholder='5678' class='input' required />
+                        </div>
+                    </div>
+                    <div class='field columns'>
+                        <button id='submitGenerate' type='submit' value='Generate' class='button is-success'>
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </body>
+</html>
