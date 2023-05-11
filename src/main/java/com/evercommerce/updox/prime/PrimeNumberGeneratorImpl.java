@@ -8,7 +8,6 @@ import java.util.Set;
 public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
 
     protected static final String FOUND_PRIMES_FILE = "foundNumber.ser";
-    private List<Integer> generatedPrimes;
     // private static Set<Integer> foundPrimes;
     // private static Integer maxPrime;
 
@@ -35,18 +34,13 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
         sb.append("\n* * * Generating prime numbers * * *\n").append("Range: ").append(startingValue).append(" - ").append(endingValue).append("\n");
         System.out.println(sb.toString());
 
-        this.generatedPrimes = new ArrayList<>();
+        List<Integer> generatedPrimes = new ArrayList<>();
         for(int i = startingValue; i <= endingValue; i++) {
             if(isPrime(i)) {
-                this.generatedPrimes.add(i);
+                generatedPrimes.add(i);
             }
         }
-        return this.generatedPrimes;
-    }
-
-    @Override
-    public List<Integer> getGeneratedPrimeList() {
-        return this.generatedPrimes;
+        return generatedPrimes;
     }
 
     @Override
