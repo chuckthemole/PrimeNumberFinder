@@ -95,7 +95,13 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
                 
                 // find next prime after current maxPrime
                 int currentPrime = primeTracker.maxPrime() + 1;
-                while(currentPrime <= stopValue && !primeTracker.get(currentPrime)) {
+                while(!primeTracker.get(currentPrime)) {
+
+                    // Don't think I need this check
+                    // if(currentPrime > stopValue) {
+                    //     break;
+                    // }
+
                     currentPrime++;
                 }
 
@@ -115,13 +121,7 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
                     }
                 }
 
-                // set new max prime
-                for(int i = primeTracker.size() - 1; i >= 2; i--) {
-                    if(primeTracker.get(i)) { // found max prime
-                        primeTracker.setMaxPrime(i);
-                        break;
-                    }
-                }
+                primeTracker.setMaxPrime();
                 primeTracker.setMaxValueChecked(primeTracker.size() - 1); // update max value checked
             }
         }

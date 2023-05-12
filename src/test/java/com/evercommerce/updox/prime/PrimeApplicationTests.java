@@ -12,10 +12,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import com.evercommerce.updox.App;
-import com.evercommerce.updox.controller.PrimeController;
 
 // @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -23,9 +28,6 @@ class PrimeApplicationTests {
 
     @Autowired
     private PrimeNumberGenerator generator;
-
-    @Autowired
-    private PrimeController controller;
 
     @Value(value="${local.server.port}")
 	private int port;
@@ -151,6 +153,16 @@ class PrimeApplicationTests {
         assertEquals(expectedPrimes, generatedPrimes);
     }
 
+    @Test
+    void currentPrimeGreaterThanStopValue() {
+        List<Integer> expectedPrimes = List.of();
+        this.generator = new PrimeNumberGeneratorImpl();
+        this.generator.useBruteForce(false);
+        List<Integer> generatedPrimes = this.generator.generate(99, 99);
+        debug(expectedPrimes, generatedPrimes, "\n* * * Test 14 Range: 99 - 99 * * * ");
+        assertEquals(expectedPrimes, generatedPrimes);
+    }
+
     // Tests for PrimeRange
     @Test
     void testPrimeRange() {
@@ -225,13 +237,24 @@ class PrimeApplicationTests {
     // Controller
     @Test
 	public void greetingShouldReturnDefaultMessage() throws Exception {
-        assertTrue(this.restTemplate.getForObject("http://localhost:" + port + "/",String.class).contains("Prime Number Generator"));
 
-        PrimeRange range = new PrimeRange();
-        range.setLower(1);
-        range.setUpper(10);
-        // HttpEntity<String> request = new HttpEntity<String>("{'lower': 1, 'upper': 12}");
-        // assertTrue(this.restTemplate.postForObject("http://localhost:" + port + "/generate", request, String.class).contains("Prime Number Generator"));
+        // GET
+        assertTrue(this.restTemplate.getForObject("http://localhost:" + this.port + "/",String.class).contains("Prime Number Generator"));
+
+        MultiValueMap<String, Object> variables = new LinkedMultiValueMap<>();
+        variables.add("lower", 2);
+        variables.add("upper", 13);
+
+        // POST
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(variables, requestHeaders);
+        String url = "http://localhost:" + this.port + "/generate";
+        ResponseEntity<String> response = this.restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+        url = "http://localhost:" + this.port + "/generate_brute_force";
+        response = this.restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+        
+        assertTrue(response.toString().contains("Prime Number Generator"));
 	}
 
     // main

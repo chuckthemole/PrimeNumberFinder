@@ -2,7 +2,10 @@ package com.evercommerce.updox.prime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 public class PrimeTrackerImpl implements PrimeTracker {
 
@@ -90,8 +93,13 @@ public class PrimeTrackerImpl implements PrimeTracker {
     }
 
     @Override
-    public void setMaxPrime(int max) {
-        this.maxPrime = max;
+    public void setMaxPrime() {
+        for(int i = maxValueChecked; i > 1; i--) {
+            if(this.get(i)) {
+                maxPrime = i;
+                break;
+            }
+        }
     }
 
     @Override

@@ -47,10 +47,9 @@ public interface PrimeTracker {
     int maxPrime();
 
     /**
-     * 
-     * @param max set max prime
+     * will find max prime in array and set is as new max prime
      */
-    void setMaxPrime(int max);
+    void setMaxPrime();
 
     /**
      * 
