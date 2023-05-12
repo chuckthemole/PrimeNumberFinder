@@ -19,9 +19,9 @@ src/main/java/com/evercommerce/updox/prime/PrimeNumberGenerator.java
 ```
 
 ## Testing
-Tests can be found here:\
+Tests can be found here:
 ```bash
-src/test/java/com/evercommerce/updox/prime/PrimeApplicationTests.java\
+src/test/java/com/evercommerce/updox/prime/PrimeApplicationTests.java
 ```
 Run using
 ```bash
