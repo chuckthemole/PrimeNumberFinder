@@ -1,5 +1,8 @@
 package com.evercommerce.updox.prime;
 
+/**
+ * Class to hold range
+ */
 public class PrimeRange {
 
     private Integer lower;

@@ -17,11 +17,9 @@
                     Written by <strong>Charles Thomas</strong>
                 </p>
 
-                <!-- show results -->
                 <div class="box">
                     <div class="columns is-centered">
-                        <div class="column"><label class="is-size-3" for="">Generated primes from <span th:text="${lower}"></span> to <span th:text="${upper}"></span></label></div>
-                        <div class="column"><label class="is-size-3" for="">Time: <span th:text="${duration}"></span><span> nanoseconds</span></label></div>
+                        <span>Error: check your values and try again.</span>
                     </div>
                     <div class="columns">
                         <form th:action="@{/}" method="get">
@@ -30,12 +28,6 @@
                             </div>
                         </form>
                     </div>
-                </div>
-
-                <div th:if="${primeList.empty}"><span>No primes found!!</span></div>
-                <div><span>Primes:</span></div>
-                <div th:each="prime : ${primeList}">
-                    <span th:text="${prime.toString}"></span>
                 </div>
             </div>
         </section>

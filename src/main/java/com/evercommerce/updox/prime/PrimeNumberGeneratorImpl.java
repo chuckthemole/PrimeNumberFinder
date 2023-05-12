@@ -1,27 +1,27 @@
 package com.evercommerce.updox.prime;
 
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
 
-    protected static final String FOUND_PRIMES_FILE = "foundNumber.ser";
-    // private static Set<Integer> foundPrimes;
-    // private static Integer maxPrime;
+    private static PrimeTracker primeTracker; // memoization method for keeping track of primes.
+    private boolean useBruteForce;
+    private long duration;
 
-    // static {
-    //     foundPrimes = new HashSet<>();
-    // }
+    static {
+        primeTracker = new PrimeTrackerImpl();
+    }
 
-    // public PrimeNumberGeneratorImpl() {
-    //     maxPrime = Integer.MIN_VALUE;
-    // }
+    public PrimeNumberGeneratorImpl() {
+        this.useBruteForce = false;
+        generate(2, primeTracker.size() - 1); // generate primes up to NODE_SIZE (100) upon construction
+    }
 
     @Override
     public List<Integer> generate(int startingValue, int endingValue) {
-
+        final long startTime = System.nanoTime();
         // swap if needed
         if(endingValue < startingValue) {
             int temp = endingValue;
@@ -29,54 +29,102 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
             startingValue = temp;
         }
 
+        findPrimesUpToValue(endingValue);
+
         // debug output
         StringBuilder sb = new StringBuilder();
         sb.append("\n* * * Generating prime numbers * * *\n").append("Range: ").append(startingValue).append(" - ").append(endingValue).append("\n");
         System.out.println(sb.toString());
 
+        // populate list of primes in range
         List<Integer> generatedPrimes = new ArrayList<>();
         for(int i = startingValue; i <= endingValue; i++) {
             if(isPrime(i)) {
                 generatedPrimes.add(i);
             }
         }
+
+        this.duration = System.nanoTime() - startTime;
+
         return generatedPrimes;
     }
 
     @Override
     public boolean isPrime(int value) {
+        if(this.useBruteForce) {
+            return this.bruteForceMethod(value);
+        }
+        return primeTracker.get(value);
+    }
 
-        return bruteForceMethod(value);
+    @Override
+    public void useBruteForce(boolean useBruteForce) {
+        this.useBruteForce = useBruteForce;
+    }
 
-        // Integer stoppingPoint = value / 2; // stop at half of value
-        // boolean flag = true;
+    @Override
+    public Long getDuration() {
+        return this.duration;
+    }
 
-        // // check if found prime numbers are divisors. this will save time needlessly iterating between primes.
-        // for(Integer prime : foundPrimes) {
-        //     if(prime > stoppingPoint) {
-        //         flag = false;
-        //         break;
-        //     }
-        //     if(value % prime == 0) { // found divisor, return false.
-        //         return false;
-        //     }
-        // }
+    /**
+     * Optimized solution for finding prime values from 2 - stopValue
+     * 
+     * @param stopValue value to find prime numbers to, ie 2-stopValue
+     */
+    private void findPrimesUpToValue(int stopValue) {
 
-        // // if not found in stored primes, start iterating from max prime.
-        // if(flag) {
-        //     Integer divisor = foundPrimes.isEmpty() ? 2 : maxPrime + 1; // if no found primes, start with 2.
-        //     while(divisor <= stoppingPoint) {
-        //         if(value % divisor == 0) { // found divisor, return false.
-        //             return false;
-        //         }
-        //         isPrime(divisor); // recurse on this number so it gets stored if prime and there are no gaps in our stored primes.
-        //         divisor++;
-        //     }
-        // }
-        
-        // // Add to list of found prime numbers
-        // foundPrimes.add(value);
-        // return true;
+        if(stopValue > 1) { // check positive
+            if(stopValue > primeTracker.maxValueChecked()) { // if false, we have these primes memoized
+
+                primeTracker.checkIfNeedsResize(stopValue); // check and add to dynamic array if needed
+                stopValue = primeTracker.size() - 1; // set max value to check to size of primeTracker - 1. Nodes are size 100 right now, so shouldn't at too much extra time. 
+
+                for(int i = 2; i <= primeTracker.maxPrime(); i++) { // mark all new dividends as not prime for each found prime
+                    if(primeTracker.get(i).compareTo(true) == 0 && (i * i) < primeTracker.size()) { // prime if true. we only need to use if the square is less than current size, otherwise out of range.
+                        // System.out.println("Found Prime: " + i + "\nLast dividend: " + primeTracker.getLastDividend(i));
+                        int lastDividend = primeTracker.getLastDividend(i);
+                        lastDividend = lastDividend != -1 ? lastDividend : (i * i) - i;
+                        for(int j = lastDividend + i; j < primeTracker.size(); j += i) { // mark remaining dividends false and update last dividend
+                            primeTracker.set(j, false);
+                            primeTracker.setLastDividend(i, j);
+                            // System.out.println("Not Prime: " + j);
+                        }
+                    }
+                }
+                
+                // find next prime after current maxPrime
+                int currentPrime = primeTracker.maxPrime() + 1;
+                while(currentPrime <= stopValue && !primeTracker.get(currentPrime)) {
+                    currentPrime++;
+                }
+
+                // mark dividends of currentPrime not prime
+                while(currentPrime <= stopValue) {
+                    int notAPrime = currentPrime * currentPrime; // start at the square
+                    while(notAPrime <= stopValue) { // mark all multiples of currentPrime false
+                        primeTracker.set(notAPrime, false);
+                        primeTracker.setLastDividend(currentPrime, notAPrime);
+                        notAPrime += currentPrime;
+                    }
+
+                    // find next prime
+                    currentPrime++;
+                    while(currentPrime <= stopValue && !primeTracker.get(currentPrime)) {
+                        currentPrime++;
+                    }
+                }
+
+                // set new max prime
+                for(int i = primeTracker.size() - 1; i >= 2; i--) {
+                    if(primeTracker.get(i)) { // found max prime
+                        primeTracker.setMaxPrime(i);
+                        break;
+                    }
+                }
+                primeTracker.setMaxValueChecked(primeTracker.size() - 1); // update max value checked
+            }
+        }
     }
 
     private boolean bruteForceMethod(int value) {

@@ -29,6 +29,17 @@ public class PrimeController {
         model.addAttribute("lower", range.getLower());
         model.addAttribute("upper", range.getUpper());
         model.addAttribute("primeList", this.generator.generate(range.getLower(), range.getUpper()));
+        model.addAttribute("duration", this.generator.getDuration().toString());
+        return "result";
+    }
+
+    @PostMapping(value = "/generate_brute_force")
+    public String generatePrimeNumbersUsingBruteForce(@ModelAttribute("primeRange") PrimeRange range, Model model) {
+        model.addAttribute("lower", range.getLower());
+        model.addAttribute("upper", range.getUpper());
+        this.generator.useBruteForce(true);
+        model.addAttribute("primeList", this.generator.generate(range.getLower(), range.getUpper()));
+        model.addAttribute("duration", this.generator.getDuration().toString());
         return "result";
     }
 }
