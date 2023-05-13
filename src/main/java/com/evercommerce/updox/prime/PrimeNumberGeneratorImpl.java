@@ -33,12 +33,14 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
             startingValue = temp;
         }
 
-        findPrimesUpToValue(endingValue);
-
         // debug output
         StringBuilder sb = new StringBuilder();
         sb.append("\n* * * Generating prime numbers * * *\n").append("Range: ").append(startingValue).append(" - ").append(endingValue).append("\n");
         System.out.println(sb.toString());
+
+        if(!this.useBruteForce) {
+            findPrimesUpToValue(endingValue);
+        }
 
         // populate list of primes in range
         List<Integer> generatedPrimes = new ArrayList<>();
