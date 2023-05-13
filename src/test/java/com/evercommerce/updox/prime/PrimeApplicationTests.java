@@ -163,6 +163,20 @@ class PrimeApplicationTests {
         assertEquals(expectedPrimes, generatedPrimes);
     }
 
+    @Test
+    void outOfRange() {
+        List<Integer> expectedPrimes = List.of();
+        this.generator = new PrimeNumberGeneratorImpl();
+        this.generator.useBruteForce(false);
+        List<Integer> generatedPrimes = this.generator.generate(-1, 99);
+        debug(expectedPrimes, generatedPrimes, "\n* * * Test 15 Range: -1 - 99 * * * ");
+        assertEquals(expectedPrimes, generatedPrimes);
+
+        generatedPrimes = this.generator.generate(99, -1);
+        debug(expectedPrimes, generatedPrimes, "\n* * * Test 14 Range: 99 - -1 * * * ");
+        assertEquals(expectedPrimes, generatedPrimes);
+    }
+
     // Tests for PrimeRange
     @Test
     void testPrimeRange() {

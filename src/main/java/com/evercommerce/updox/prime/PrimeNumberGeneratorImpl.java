@@ -9,7 +9,7 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
     private static PrimeTracker primeTracker; // memoization method for keeping track of primes.
     private boolean useBruteForce;
     private long duration;
-    private static final int MAX_TIME_TILL_ABORT = 10;
+    // private static final int MAX_TIME_TILL_ABORT = 10;
 
     static {
         primeTracker = new PrimeTrackerImpl();
@@ -46,9 +46,9 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
             if(isPrime(i)) {
                 generatedPrimes.add(i);
             }
-            if(Duration.ofNanos(System.nanoTime() - startTime).toSeconds() > MAX_TIME_TILL_ABORT) {
-                break;
-            }
+            // if(Duration.ofNanos(System.nanoTime() - startTime).toSeconds() > MAX_TIME_TILL_ABORT) {
+            //     break;
+            // }
         }
 
         this.duration = System.nanoTime() - startTime;

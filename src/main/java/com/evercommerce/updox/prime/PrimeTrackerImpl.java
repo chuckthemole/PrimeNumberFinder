@@ -134,9 +134,9 @@ public class PrimeTrackerImpl implements PrimeTracker {
             Arrays.fill(this.lastDividend, -1);
         }
         public boolean get(int index) {
-            if(index < 0 || index >= NODE_SIZE) {
-                throw new ArrayIndexOutOfBoundsException("Need to handle wrong user input");
-            }
+            // if(index < 0 || index >= NODE_SIZE) {
+            //     throw new ArrayIndexOutOfBoundsException("Need to handle wrong user input");
+            // }
             return this.node[index];
         }
         public void set(int index, boolean isPrime) {
