@@ -30,7 +30,7 @@ Run using
 
 To test coverage Jacoco is used.
 ```bash
-mvn jacoco:prepare-agent test install jacoco:report
+./mvnw jacoco:prepare-agent test install jacoco:report
 ```
 
 To find interactive report of test coverage go to index.html below after creating the report with the above command

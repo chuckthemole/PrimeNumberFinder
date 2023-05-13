@@ -2,10 +2,7 @@ package com.evercommerce.updox.prime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
-import com.google.common.collect.Lists;
 
 public class PrimeTrackerImpl implements PrimeTracker {
 
@@ -46,11 +43,6 @@ public class PrimeTrackerImpl implements PrimeTracker {
             }
         }
         this.primes.get(nodeIndex).set(index - (nodeIndex * NODE_SIZE), isPrime); // set node value
-
-        // doing this elsewhere
-        // if(isPrime && index > this.maxPrime) { // check if new maxPrime
-        //     this.maxPrime = index;
-        // }
     }
 
     @Override
@@ -142,6 +134,9 @@ public class PrimeTrackerImpl implements PrimeTracker {
             Arrays.fill(this.lastDividend, -1);
         }
         public boolean get(int index) {
+            if(index < 0 || index >= NODE_SIZE) {
+                throw new ArrayIndexOutOfBoundsException("Need to handle wrong user input");
+            }
             return this.node[index];
         }
         public void set(int index, boolean isPrime) {

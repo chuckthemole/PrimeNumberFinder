@@ -9,6 +9,7 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
     private static PrimeTracker primeTracker; // memoization method for keeping track of primes.
     private boolean useBruteForce;
     private long duration;
+    private static final int MAX_TIME_TILL_ABORT = 10;
 
     static {
         primeTracker = new PrimeTrackerImpl();
@@ -22,6 +23,9 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
     @Override
     public List<Integer> generate(int startingValue, int endingValue) {
         final long startTime = System.nanoTime();
+        if(startingValue < 0 || endingValue < 0) {
+            return List.of();
+        }
         // swap if needed
         if(endingValue < startingValue) {
             int temp = endingValue;
@@ -41,6 +45,9 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
         for(int i = startingValue; i <= endingValue; i++) {
             if(isPrime(i)) {
                 generatedPrimes.add(i);
+            }
+            if(Duration.ofNanos(System.nanoTime() - startTime).toSeconds() > MAX_TIME_TILL_ABORT) {
+                break;
             }
         }
 
@@ -127,6 +134,11 @@ public class PrimeNumberGeneratorImpl implements PrimeNumberGenerator {
         }
     }
 
+    /**
+     * 
+     * @param value value to determine if prime
+     * @return if value is prime
+     */
     private boolean bruteForceMethod(int value) {
         Integer stoppingPoint = value / 2; // stop at half of value
         int divisor = 2;
